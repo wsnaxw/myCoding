@@ -46,8 +46,8 @@ public class MyThreadPoolManager implements MyThreadPool {
 		this.worker = new Worker[MyThreadPoolManager.workerNumber];
 		for (int i = 0; i < MyThreadPoolManager.workerNumber; i++) {
 			worker[i] = new Worker();
-			Thread r = new Thread(worker[i], "worker" + atom.incrementAndGet());
-			r.start();
+			worker[i].setName( "worker" + atom.incrementAndGet());
+			worker[i].start();
 		}
 	}
 	/**
@@ -141,7 +141,7 @@ public class MyThreadPoolManager implements MyThreadPool {
 	 * @author MarTin Wu
 	 *
 	 */
-	private class Worker implements Runnable {
+	private class Worker extends Thread {
 		/**
 		 * 是否工作状态 为false 则不工作
 		 */
