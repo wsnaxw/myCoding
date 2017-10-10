@@ -22,7 +22,9 @@ public class MyThreadPoolManager implements MyThreadPool {
 	/**
 	 * 任务队列 先进先出 linkedlist的 头尾插入删除效率高
 	 */
-	private static List<Runnable> taskQueue = new LinkedList<Runnable>();
+	//private static List<Runnable> taskQueue = new LinkedList<Runnable>();
+	//blockingqueque 效率 安全更好
+	private static BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<Runnable>();
 	/**
 	 * 由于是非单例模式，确保每次创建的线程原子性 用AtomicInteger也可
 	 */
@@ -163,13 +165,20 @@ public class MyThreadPoolManager implements MyThreadPool {
 					}
 					//取值 运行任务 计数器+1 把任务置空 
 					if (!taskQueue.isEmpty()) {
-						r = taskQueue.remove(0);
-						r.run();
-						taskNums++;
-						r = null;
+						try {
+							r = taskQueue.take();
+							//r = taskQueue.remove(0);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
+					//判断任务是否为空 防止异常
+					if(r!=null){
+						r.run();
+					}
+					taskNums++;
+					r = null;
 				}
-
 			}
 		}
 		/**
@@ -178,6 +187,5 @@ public class MyThreadPoolManager implements MyThreadPool {
 		private void stopWork() {
 			isWork = false;
 		}
-
 	}
 }
