@@ -170,13 +170,14 @@ public class MyThreadPoolManager implements MyThreadPool {
 							//r = taskQueue.remove(0);
 						} catch (Exception e) {
 							e.printStackTrace();
+							r = null;
 						}
 					}
 					//判断任务是否为空 防止异常
 					if(r!=null){
 						r.run();
+						taskNums++;
 					}
-					taskNums++;
 					r = null;
 				}
 			}
